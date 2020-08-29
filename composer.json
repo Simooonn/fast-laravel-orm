@@ -1,0 +1,28 @@
+{
+    "name": "hashyoo/fast-laravel-orm",
+    "description": "laravel-orm快速操作",
+    "type": "library",
+    "keywords": [ "php", "laravel", "ORM","orm快速操作"],
+    "require": {
+        "php": ">=5.6.0",
+        "hashyoo/damon-function": "*",
+        "illuminate/database": "^7.0"
+    },
+    "require-dev": {
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "damon",
+            "email": "644577519@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "HashyooFast\\": "src/"
+        },
+        "classmap": [
+        ]
+    }
+}
