@@ -12,11 +12,11 @@ class LaravelModel extends Model
     use SoftDeletes;
 
 
-//    private function laravel_child_model()
-//    {
-//        $child_model_class = get_called_class();
-//        return new $child_model_class;
-//    }
+    private function laravel_model()
+    {
+        $child_model_class = get_called_class();
+        return new $child_model_class;
+    }
 
     /**
      * $option参数示例
@@ -81,7 +81,7 @@ class LaravelModel extends Model
     public function laravel_table_fields()
     {
         $prefix       = DB::getConfig('prefix');
-        $table        = $this->table;
+        $table        = self::laravel_model()->table;
         $s_full_table = $prefix . $table;
         $columns      = DB::getDoctrineSchemaManager()
                           ->listTableColumns($s_full_table);
@@ -404,10 +404,6 @@ class LaravelModel extends Model
     }
 
 
-
-
-
-
     protected function tmp_where_option()
     {
         return $this->laravel_where_option();
@@ -433,7 +429,6 @@ class LaravelModel extends Model
     {
         return $this->laravel_option($option);
     }
-    
 
 
 }

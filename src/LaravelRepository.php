@@ -11,21 +11,17 @@ namespace HashyooFast;
 class LaravelRepository
 {
 
-    public function __construct()
+    /**
+     * 模型名称
+     *
+     * @return mixed
+     */
+    public function laravel_model()
     {
-        $this->laravel_model = $this->baseModel();
+        $child_model_class = get_called_class();
+        $model             = new $child_model_class;
+        return $model->baseModel();
     }
-
-    //    /**
-    //     * 模型名称
-    //     * @return mixed
-    //     */
-    //    public function laravel_child_model()
-    //    {
-    //        $child_model_class = get_called_class();
-    //        $model = new $child_model_class;
-    //        return $model->baseModel();
-    //    }
 
     /**
      * 查询一条数据-根据主键查询
@@ -36,7 +32,8 @@ class LaravelRepository
      */
     public function find($id, $arr_option = [])
     {
-        return $this->laravel_model->laravelFind($id, $arr_option);
+        return self::laravel_model()
+                   ->laravelFind($id, $arr_option);
     }
 
     /**
@@ -47,7 +44,8 @@ class LaravelRepository
      */
     public function get_one($arr_option = [])
     {
-        return $this->laravel_model->laravelOne($arr_option);
+        return self::laravel_model()
+                   ->laravelOne($arr_option);
     }
 
 
@@ -59,7 +57,8 @@ class LaravelRepository
      */
     public function get_list($arr_option = [])
     {
-        return $this->laravel_model->laravelList($arr_option);
+        return self::laravel_model()
+                   ->laravelList($arr_option);
     }
 
     /**
@@ -71,7 +70,8 @@ class LaravelRepository
      */
     public function get_all($arr_option = [])
     {
-        return $this->laravel_model->laravelAll($arr_option);
+        return self::laravel_model()
+                   ->laravelAll($arr_option);
     }
 
     /**
@@ -83,7 +83,7 @@ class LaravelRepository
      */
     public function add_one($post_data = [])
     {
-        $model     = $this->laravel_model;
+        $model     = self::laravel_model();
         $post_data = yoo_array_remain_trim($post_data, $model->laravel_table_fields());
         return $model->create($post_data); //返回插入数据
     }
@@ -97,7 +97,8 @@ class LaravelRepository
      */
     public function add_many($post_data = [])
     {
-        return $this->laravel_model->insert($post_data);//返回 true 或 false
+        return self::laravel_model()
+                   ->insert($post_data);//返回 true 或 false
     }
 
     /**
@@ -109,7 +110,8 @@ class LaravelRepository
      */
     public function update($update_data = [], $arr_option = [])
     {
-        return $this->laravel_model->laravelUpdate($update_data, $arr_option);//返回影响行数
+        return self::laravel_model()
+                   ->laravelUpdate($update_data, $arr_option);//返回影响行数
     }
 
     /**
@@ -122,7 +124,8 @@ class LaravelRepository
      */
     public function update_or_create($where = [], $update_data = [])
     {
-        return $this->laravel_model->updateOrCreate($where, $update_data); //返回插入或修改数据 只会影响或者插入一条数据
+        return self::laravel_model()
+                   ->updateOrCreate($where, $update_data); //返回插入或修改数据 只会影响或者插入一条数据
     }
 
 
@@ -136,7 +139,8 @@ class LaravelRepository
      */
     public function get_count($arr_option = [])
     {
-        return $this->laravel_model->laravelCount($arr_option);
+        return self::laravel_model()
+                   ->laravelCount($arr_option);
     }
 
     /**
@@ -149,7 +153,8 @@ class LaravelRepository
      */
     public function get_sum($arr_option = [])
     {
-        return $this->laravel_model->laravelSum($arr_option);
+        return self::laravel_model()
+                   ->laravelSum($arr_option);
     }
 
 
@@ -165,7 +170,8 @@ class LaravelRepository
     public function delete_one($id = 0)
     {
         $arr_option = ['where' => ['id' => $id]];
-        return $this->laravel_model->laravelDelete($arr_option, false);
+        return self::laravel_model()
+                   ->laravelDelete($arr_option, false);
     }
 
     /**
@@ -180,7 +186,8 @@ class LaravelRepository
     public function del_one_true($id = 0)
     {
         $arr_option = ['where' => ['id' => $id]];
-        return $this->laravel_model->laravelDelete($arr_option, true);
+        return self::laravel_model()
+                   ->laravelDelete($arr_option, true);
     }
 
     /**
@@ -194,7 +201,8 @@ class LaravelRepository
      */
     public function delete($arr_option = [])
     {
-        return $this->laravel_model->laravelDelete($arr_option, false);
+        return self::laravel_model()
+                   ->laravelDelete($arr_option, false);
     }
 
     /**
@@ -207,7 +215,8 @@ class LaravelRepository
      */
     public function del_true($arr_option = [])
     {
-        return $this->laravel_model->laravelDelete($arr_option, true);
+        return self::laravel_model()
+                   ->laravelDelete($arr_option, true);
     }
 
 
@@ -222,8 +231,9 @@ class LaravelRepository
      */
     public function increase_num($id, $field = 'sort', $step = 1)
     {
-        return $this->laravel_model->where('id', $id)
-                                   ->increment($field, $step);
+        return self::laravel_model()
+                   ->where('id', $id)
+                   ->increment($field, $step);
     }
 
     /**
@@ -237,8 +247,9 @@ class LaravelRepository
      */
     public function decrease_num($id, $field = 'sort', $step = 1)
     {
-        return $this->laravel_model->where('id', $id)
-                                   ->decrement($field, $step);
+        return self::laravel_model()
+                   ->where('id', $id)
+                   ->decrement($field, $step);
     }
 
 
@@ -254,8 +265,9 @@ class LaravelRepository
      */
     public function incr_num($option, $field = 'sort', $step = 1)
     {
-        $result = $this->laravel_model->laravelWhereOption($option)
-                                      ->increment($field, $step);
+        $result = self::laravel_model()
+                      ->laravelWhereOption($option)
+                      ->increment($field, $step);
         return $result;
     }
 
@@ -271,9 +283,11 @@ class LaravelRepository
      */
     public function decr_num($option, $field = 'sort', $step = 1)
     {
-        $result = $this->laravel_model->laravelWhereOption($option)
-                                      ->decrement($field, $step);
+        $result = self::laravel_model()
+                      ->laravelWhereOption($option)
+                      ->decrement($field, $step);
         return $result;
     }
 
 }
+

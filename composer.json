@@ -24,15 +24,5 @@
         },
         "classmap": [
         ]
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "HashyooFast\\Providers\\LaravelRepositoryProvider"
-            ],
-            "aliases": {
-                "DES3": "HashyooFast\\Facade\\LaravelRepository"
-            }
-        }
     }
 }
