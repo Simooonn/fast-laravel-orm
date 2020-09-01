@@ -20,7 +20,7 @@ class LaravelRepository
     public function laravel_model()
     {
         $model_class = get_called_class();
-        $model             = new $model_class;
+        $model       = new $model_class;
         return $model->baseModel();
     }
 
@@ -92,9 +92,8 @@ class LaravelRepository
      */
     public function add_one($data = [])
     {
-        $model     = self::laravel_model();
-        $data = yoo_array_remain_trim($data, $model->laravel_table_fields());
-        return $model->create($data); //返回插入数据
+        return self::laravel_model()
+                   ->laravelCreate($data); //返回插入数据
     }
 
     /**
@@ -108,7 +107,7 @@ class LaravelRepository
     public function add_many($data = [])
     {
         return self::laravel_model()
-                   ->insert($data);//返回 true 或 false
+                   ->laravelInsert($data);//返回 true 或 false
     }
 
     /**
@@ -138,7 +137,7 @@ class LaravelRepository
     public function update_or_create($where = [], $data = [])
     {
         return self::laravel_model()
-                   ->updateOrCreate($where, $data); //返回插入或修改数据 只会影响或者插入一条数据
+                   ->laravelUpdateOrCreate($where, $data); //返回插入或修改数据 只会影响或者插入一条数据
     }
 
 
@@ -234,9 +233,9 @@ class LaravelRepository
      *
      * 单条数据字段自增
      *
-     * @param int    $id        主键id
-     * @param string $field     字段名
-     * @param int    $step      自增值
+     * @param int    $id    主键id
+     * @param string $field 字段名
+     * @param int    $step  自增值
      *
      * @return mixed
      * @author wumengmeng <wu_mengmeng@foxmail.com>
@@ -251,9 +250,9 @@ class LaravelRepository
     /**
      * 单条数据字段自减
      *
-     * @param int    $id        主键id
-     * @param string $field     字段名
-     * @param int    $step      自减值
+     * @param int    $id    主键id
+     * @param string $field 字段名
+     * @param int    $step  自减值
      *
      * @return mixed
      * @author wumengmeng <wu_mengmeng@foxmail.com>
@@ -270,8 +269,8 @@ class LaravelRepository
      * 根据条件多条数据字段自增
      *
      * @param array  $option
-     * @param string $field     字段名
-     * @param int    $step      自增值
+     * @param string $field 字段名
+     * @param int    $step  自增值
      *
      * @return mixed
      * @author wumengmeng <wu_mengmeng@foxmail.com>
@@ -288,8 +287,8 @@ class LaravelRepository
      * 根据条件多条数据字段自减
      *
      * @param array  $option
-     * @param string $field     字段名
-     * @param int    $step      自减值
+     * @param string $field 字段名
+     * @param int    $step  自减值
      *
      * @return mixed
      * @author wumengmeng <wu_mengmeng@foxmail.com>

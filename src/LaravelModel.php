@@ -209,17 +209,17 @@ class LaravelModel extends Model
                   foreach ($value as $kk => $vv) {
                       switch ($kk) {
                           case 'where':
-                              $qqqqq = $this->laravel_where($qqqqq, $vv);
+                              $qqqqq = self::laravel_where($qqqqq, $vv);
                               break;
                           case 'orwhere':
-                              $qqqqq = $this->laravel_orwhere($qqqqq, $vv);
+                              $qqqqq = self::laravel_orwhere($qqqqq, $vv);
                               break;
                           case 'wherein':
-                              $qqqqq = $this->laravel_wherein($qqqqq, $vv);
+                              $qqqqq = self::laravel_wherein($qqqqq, $vv);
                               break;
                           case 'wherenotin':
                               // 注：当关联关系是1对多时，whereNotIn效果有限，只有关联里有一个数据不符合whereNotIn条件，该数据仍然会显示
-                              $qqqqq = $this->laravel_wherenotin($qqqqq, $vv);
+                              $qqqqq = self::laravel_wherenotin($qqqqq, $vv);
                               break;
 
                           default:
@@ -242,24 +242,29 @@ class LaravelModel extends Model
      */
     private function laravel_query($query, &$option = [], $arr_remain = [])
     {
-        $option = $this->laravel_option($option);
+        $option = self::laravel_option($option);
         if (!empty($arr_remain)) {
             $arr_remain = yoo_array_value_lower($arr_remain);
             $option     = yoo_array_remain($option, $arr_remain);
         }
 
-        $query = !empty($option['with']) ? $this->laravel_with($query, $option['with']) : $query;
-        $query = !empty($option['where']) ? $this->laravel_where($query, $option['where']) : $query;
-        $query = !empty($option['orwhere']) ? $this->laravel_orwhere($query, $option['orwhere']) : $query;
-        $query = !empty($option['wherein']) ? $this->laravel_wherein($query, $option['wherein']) : $query;
-        $query = !empty($option['wherenotin']) ? $this->laravel_wherenotin($query, $option['wherenotin']) : $query;
-        $query = !empty($option['wherehas']) ? $this->laravel_wherehas($query, $option['wherehas']) : $query;
-        $query = !empty($option['field']) ? $this->laravel_select($query, $option['field']) : $query;
-        $query = !empty($option['withcount']) ? $this->laravel_withcount($query, $option['withcount']) : $query;
-        $query = !empty($option['orderby']) ? $this->laravel_order($query, $option['orderby']) : $query;
+        $query = !empty($option['with']) ? self::laravel_with($query, $option['with']) : $query;
+        $query = !empty($option['where']) ? self::laravel_where($query, $option['where']) : $query;
+        $query = !empty($option['orwhere']) ? self::laravel_orwhere($query, $option['orwhere']) : $query;
+        $query = !empty($option['wherein']) ? self::laravel_wherein($query, $option['wherein']) : $query;
+        $query = !empty($option['wherenotin']) ? self::laravel_wherenotin($query, $option['wherenotin']) : $query;
+        $query = !empty($option['wherehas']) ? self::laravel_wherehas($query, $option['wherehas']) : $query;
+        $query = !empty($option['field']) ? self::laravel_select($query, $option['field']) : $query;
+        $query = !empty($option['withcount']) ? self::laravel_withcount($query, $option['withcount']) : $query;
+        $query = !empty($option['orderby']) ? self::laravel_order($query, $option['orderby']) : $query;
         return $query;
 
     }
+
+
+
+
+    /************ scope ************/
 
     /**
      * 参数设置
@@ -275,7 +280,7 @@ class LaravelModel extends Model
      */
     public function scopeLaravelOption($query, $option = [])
     {
-        $result = $this->laravel_query($query, $option);
+        $result = self::laravel_query($query, $option);
         return $result;
     }
 
@@ -292,8 +297,8 @@ class LaravelModel extends Model
      */
     public function scopeLaravelWhereOption($query, $option = [])
     {
-        $arr_remain = $this->laravel_where_option();
-        $result     = $this->laravel_query($query, $option, $arr_remain);
+        $arr_remain = self::laravel_where_option();
+        $result     = self::laravel_query($query, $option, $arr_remain);
         return $result;
     }
 
@@ -308,8 +313,8 @@ class LaravelModel extends Model
      */
     public function scopeLaravelAll($query, $option = [])
     {
-        return $this->laravel_query($query, $option)
-                    ->get();
+        return self::laravel_query($query, $option)
+                   ->get();
     }
 
     /**
@@ -321,8 +326,8 @@ class LaravelModel extends Model
      */
     public function scopeLaravelList($query, $option = [])
     {
-        return $this->laravel_query($query, $option)
-                    ->paginate($option['limit']);
+        return self::laravel_query($query, $option)
+                   ->paginate($option['limit']);
     }
 
     /**
@@ -338,8 +343,84 @@ class LaravelModel extends Model
     public function scopeLaravelFind($query, $id = 0, $option = [])
     {
         //查询不存在的数据时，不返回null 最好使用 laravelOption()->find()
-        return $this->laravel_query($query, $option, ['with', 'field', 'withCount'])
-                    ->find($id);
+        return self::laravel_query($query, $option, ['with', 'field', 'withCount'])
+                   ->find($id);
+    }
+
+    /**
+     * 查询一条数据(通过where条件查询)
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return array
+     */
+    public function scopeLaravelOne($query, $option = [])
+    {
+        return self::laravel_query($query, $option)
+                   ->first();
+    }
+
+    /**
+     * 获取统计数量
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function scopeLaravelCount($query, $option = [])
+    {
+        return self::laravel_query($query, $option)
+                   ->count();
+    }
+
+    /**
+     * 获取统计总和
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function scopeLaravelSum($query, $option = [])
+    {
+        return self::laravel_query($query, $option)
+                   ->sum($option['sum']);
+
+    }
+
+    /**
+     * 添加一条数据
+     *
+     * @param       $query
+     * @param array $data
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function scopeLaravelCreate($query, $data = [])
+    {
+        $data = yoo_array_remain_trim($data, self::laravel_table_fields());
+        return $query->create($data);
+    }
+
+    /**
+     * 添加多条数据
+     *
+     * @param       $query
+     * @param array $data
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function scopeLaravelInsert($query, $data = [])
+    {
+        //TODO 处理字段，表中不存在的字段，自动去除
+        //        $data = yoo_array_remain_trim($data, self::laravel_table_fields());
+        return $query->insert($data);
     }
 
     /**
@@ -354,53 +435,27 @@ class LaravelModel extends Model
      */
     public function scopeLaravelUpdate($query, $data = [], $option = [])
     {
-        return $this->laravel_query($query, $option)
-                    ->update($data);
+        $data = yoo_array_remain_trim($data, self::laravel_table_fields());
+        return self::laravel_query($query, $option)
+                   ->update($data);
     }
 
     /**
-     * 查询一条数据(通过where条件查询)
+     * 更新数据或添加数据
      *
      * @param       $query
-     * @param array $option
-     *
-     * @return array
-     */
-    public function scopeLaravelOne($query, $option = [])
-    {
-        return $this->laravel_query($query, $option)
-                    ->first();
-    }
-
-    /**
-     * 获取统计数量
-     *
-     * @param       $query
-     * @param array $option
+     * @param array $where
+     * @param array $data
      *
      * @return mixed
      * @author wumengmeng <wu_mengmeng@foxmail.com>
      */
-    public function scopeLaravelCount($query, $option = [])
+    public function scopeLaravelUpdateOrCreate($query, $where = [], $data = [])
     {
-        return $this->laravel_query($query, $option)
-                    ->count();
-    }
-
-    /**
-     * 获取统计总和
-     *
-     * @param       $query
-     * @param array $option
-     *
-     * @return mixed
-     * @author wumengmeng <wu_mengmeng@foxmail.com>
-     */
-    public function scopeLaravelSum($query, $option = [])
-    {
-        return $this->laravel_query($query, $option)
-                    ->sum($option['sum']);
-
+        $table_fields = self::laravel_table_fields();
+        $where        = yoo_array_remain_trim($where, $table_fields);
+        $data         = yoo_array_remain_trim($data, $table_fields);
+        return $query->updateOrCreate($where, $data);
     }
 
     /**
@@ -415,8 +470,8 @@ class LaravelModel extends Model
      */
     public function scopeLaravelDelete($query, $option = [], $bool = true)
     {
-        $arr_remain = $this->laravel_where_option();
-        $result     = $this->laravel_query($query, $option, $arr_remain);
+        $arr_remain = self::laravel_where_option();
+        $result     = self::laravel_query($query, $option, $arr_remain);
         if ($bool === true) {
             return $result->forceDelete();  //物理删除
         }
@@ -428,11 +483,252 @@ class LaravelModel extends Model
 
 
 
+    /************ 直接调用 ************/
+
+    /**
+     * 参数设置
+     *
+     * [注] 设置['with', 'where', 'orwhere', 'wherein', 'wherenotin', 'wherehas', 'field', 'withcount', 'orderby']
+     *
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_option($option = [])
+    {
+        $query  = self::laravel_model();
+        $result = self::laravel_query($query, $option);
+        return $result;
+    }
+
+    /**
+     * 参数设置
+     *
+     * [注] 只设置['where', 'orWhere', 'whereIn', 'whereNotIn', 'whereHas']
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_where_option($option = [])
+    {
+        $query      = self::laravel_model();
+        $arr_remain = self::laravel_where_option();
+        $result     = self::laravel_query($query, $option, $arr_remain);
+        return $result;
+    }
+
+    /**
+     * 所有数据
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_all($option = [])
+    {
+        $query = self::laravel_model();
+        return self::laravel_query($query, $option)
+                   ->get();
+    }
+
+    /**
+     * 获取列表数据-含分页
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     */
+    public function lara_list($option = [])
+    {
+        $query = self::laravel_model();
+        return self::laravel_query($query, $option)
+                   ->paginate($option['limit']);
+    }
+
+    /**
+     * 查询一条数据(通过主键id查询)
+     *
+     * @param       $query
+     * @param int   $id
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_find($id = 0, $option = [])
+    {
+        $query = self::laravel_model();
+
+        //查询不存在的数据时，不返回null 最好使用 laravelOption()->find()
+        return self::laravel_query($query, $option, ['with', 'field', 'withCount'])
+                   ->find($id);
+    }
+
+    /**
+     * 查询一条数据(通过where条件查询)
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return array
+     */
+    public function lara_one($option = [])
+    {
+        $query = self::laravel_model();
+        return self::laravel_query($query, $option)
+                   ->first();
+    }
+
+    /**
+     * 获取统计数量
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_count($option = [])
+    {
+        $query = self::laravel_model();
+        return self::laravel_query($query, $option)
+                   ->count();
+    }
+
+    /**
+     * 获取统计总和
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_sum($option = [])
+    {
+        $query = self::laravel_model();
+        return self::laravel_query($query, $option)
+                   ->sum($option['sum']);
+
+    }
+
+    /**
+     * 添加一条数据
+     *
+     * @param       $query
+     * @param array $data
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_create($data = [])
+    {
+        $query = self::laravel_model();
+        $data  = yoo_array_remain_trim($data, self::laravel_table_fields());
+        return $query->create($data);
+    }
+
+    /**
+     * 添加多条数据
+     *
+     * @param       $query
+     * @param array $data
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_insert($data = [])
+    {
+        $query = self::laravel_model();
+        //TODO 处理字段，表中不存在的字段，自动去除
+        //        $data = yoo_array_remain_trim($data, self::laravel_table_fields());
+        return $query->insert($data);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param       $query
+     * @param array $data
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_update($data = [], $option = [])
+    {
+        $query = self::laravel_model();
+        $data  = yoo_array_remain_trim($data, self::laravel_table_fields());
+        return self::laravel_query($query, $option)
+                   ->update($data);
+    }
+
+    /**
+     * 更新数据或添加数据
+     *
+     * @param array $where
+     * @param array $data
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_update_or_create($where = [], $data = [])
+    {
+        $query        = self::laravel_model();
+        $table_fields = self::laravel_table_fields();
+        $where        = yoo_array_remain_trim($where, $table_fields);
+        $data         = yoo_array_remain_trim($data, $table_fields);
+        return $query->updateOrCreate($where, $data);
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param       $query
+     * @param array $option
+     * @param bool  $bool
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    public function lara_delete($option = [], $bool = true)
+    {
+        $query      = self::laravel_model();
+        $arr_remain = self::laravel_where_option();
+        $result     = self::laravel_query($query, $option, $arr_remain);
+        if ($bool === true) {
+            return $result->forceDelete();  //物理删除
+        }
+        else {
+            return $result->delete();       //软删除
+        }
+    }
+
+    /* 软删除 */
+    public function lara_del($option = [])
+    {
+        return self::lara_delete($option, false);
+    }
+
+    /* 物理删除 */
+    public function lara_del_true($option = [])
+    {
+        return self::lara_delete($option, true);
+    }
+
 
     /***************** 兼容代码 *****************/
     protected function tmp_where_option()
     {
-        return $this->laravel_where_option();
+        return self::laravel_where_option();
     }
 
     /**
@@ -447,13 +743,13 @@ class LaravelModel extends Model
      */
     protected function tmp_laravel_query($query, &$option = [], $arr_remain = [])
     {
-        return $this->laravel_query($query, $option, $arr_remain);
+        return self::laravel_query($query, $option, $arr_remain);
     }
 
     /* 基础 option */
     protected function tmp_laravel_option($option = [])
     {
-        return $this->laravel_option($option);
+        return self::laravel_option($option);
     }
 
 

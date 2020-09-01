@@ -144,9 +144,12 @@ class IndexController
         User::laravelList($option);//根据条件获取分页数据
         User::laravelFind($n_id,$option);//根据主键查询1条数据
         User::laravelOne($option);//根据条件查询1条数据
-        User::laravelUpdate($option);//根据条件更新数据
         User::laravelCount($option);//根据条件获取统计数量
         User::laravelSum($option);//根据条件获取统计总和
+        User::laravelCreate($option);//添加1条数据
+        User::laravelInsert($option);//添加多条数据
+        User::laravelUpdate($option);//根据条件更新数据
+        User::laravelUpdateOrCreate($option);//更新数据或添加数据
         User::laravelDelete($option);//根据条件删除数据
 
         
