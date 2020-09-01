@@ -261,12 +261,35 @@ class LaravelModel extends Model
 
     }
 
+    /**
+     * 参数设置
+     *
+     * [注] 设置['with', 'where', 'orwhere', 'wherein', 'wherenotin', 'wherehas', 'field', 'withcount', 'orderby']
+     *
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
     public function scopeLaravelOption($query, $option = [])
     {
         $result = $this->laravel_query($query, $option);
         return $result;
     }
 
+    /**
+     * 参数设置
+     *
+     * [注] 只设置['where', 'orWhere', 'whereIn', 'whereNotIn', 'whereHas']
+     *
+     * @param       $query
+     * @param array $option
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
     public function scopeLaravelWhereOption($query, $option = [])
     {
         $arr_remain = $this->laravel_where_option();
@@ -319,12 +342,11 @@ class LaravelModel extends Model
                     ->find($id);
     }
 
-
     /**
-     * 查询一条数据(通过主键id查询)
+     * 更新数据
      *
      * @param       $query
-     * @param int   $id
+     * @param array $data
      * @param array $option
      *
      * @return mixed
@@ -404,6 +426,10 @@ class LaravelModel extends Model
     }
 
 
+
+
+
+    /***************** 兼容代码 *****************/
     protected function tmp_where_option()
     {
         return $this->laravel_where_option();
