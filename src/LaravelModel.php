@@ -12,11 +12,11 @@ class LaravelModel extends Model
     use SoftDeletes;
 
 
-    private function laravel_child_model()
-    {
-        $child_model_class = get_called_class();
-        return new $child_model_class;
-    }
+//    private function laravel_child_model()
+//    {
+//        $child_model_class = get_called_class();
+//        return new $child_model_class;
+//    }
 
     /**
      * $option参数示例
@@ -81,7 +81,7 @@ class LaravelModel extends Model
     public function laravel_table_fields()
     {
         $prefix       = DB::getConfig('prefix');
-        $table        = $this->laravel_child_model()->table;
+        $table        = $this->table;
         $s_full_table = $prefix . $table;
         $columns      = DB::getDoctrineSchemaManager()
                           ->listTableColumns($s_full_table);
@@ -102,7 +102,7 @@ class LaravelModel extends Model
         return $option;
     }
 
-    private function where_option()
+    private function laravel_where_option()
     {
         return yoo_array_value_lower(['where', 'orWhere', 'whereIn', 'whereNotIn', 'whereHas']);
     }
@@ -269,7 +269,7 @@ class LaravelModel extends Model
 
     public function scopeLaravelWhereOption($query, $option = [])
     {
-        $arr_remain = $this->where_option();
+        $arr_remain = $this->laravel_where_option();
         $result     = $this->laravel_query($query, $option, $arr_remain);
         return $result;
     }
@@ -393,7 +393,7 @@ class LaravelModel extends Model
      */
     public function scopeLaravelDelete($query, $option = [], $bool = true)
     {
-        $arr_remain = $this->where_option();
+        $arr_remain = $this->laravel_where_option();
         $result     = $this->laravel_query($query, $option, $arr_remain);
         if ($bool === true) {
             return $result->forceDelete();  //物理删除
@@ -402,6 +402,38 @@ class LaravelModel extends Model
             return $result->delete();       //软删除
         }
     }
+
+
+
+
+
+
+    protected function tmp_where_option()
+    {
+        return $this->laravel_where_option();
+    }
+
+    /**
+     * 条件查询
+     *
+     * @param       $query
+     * @param array $option
+     * @param array $arr_remain
+     *
+     * @return mixed
+     * @author wumengmeng <wu_mengmeng@foxmail.com>
+     */
+    protected function tmp_laravel_query($query, &$option = [], $arr_remain = [])
+    {
+        return $this->laravel_query($query, $option, $arr_remain);
+    }
+
+    /* 基础 option */
+    protected function tmp_laravel_option($option = [])
+    {
+        return $this->laravel_option($option);
+    }
+    
 
 
 }
