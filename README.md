@@ -1,5 +1,5 @@
-# fast-laravel-orm
-##laravel-orm快速操作
+# laravel-orm快速操作 # 
+## 安装 ##
 
 ### 安装方法 ###
 
@@ -7,8 +7,11 @@
 composer require hashyoo/fast-laravel-orm
 ```
 
+## 使用 ##
 
-### Model引入 ###
+### LaravelModel ###
+
+#### LaravelModel引入 ####
 ```php
 <?php
 
@@ -38,7 +41,7 @@ class Users extends Base
 
 ```
 
-### Model使用方法 ###
+#### LaravelModel使用方法 ####
 ```php
 <?php
 
@@ -60,9 +63,9 @@ class IndexController
     
 }
 ```
+### LaravelRepository ###
 
-
-### Repository引入 ###
+#### LaravelRepository引入 ####
 ```php
 <?php
 
@@ -84,7 +87,7 @@ use Common\Model\Users;
 
 class UsersRepository extends BaseRepository
 {
-    /**/
+    /* 该方法必须定义 */
     public function baseModel()
     {
         return new Users();
@@ -93,24 +96,22 @@ class UsersRepository extends BaseRepository
 
 ```
 
-### Repository使用方法 ###
+#### LaravelRepository使用方法 ####
 ```php
 <?php
 
 namespace App\Http\Controllers;
-use Common\Model\Users;
+use Common\Repository\UsersRepository;
 class IndexController
 {
     public function test(){
         //格式参考LaravelModel里的demo方法
         $arr_option = [];
         
-        //获取所有数据
-        User::laravelAll($arr_option);
-        User::laravelOption($arr_option)->get();
-        
-        //指定条件数据sort字段自增5
-        User::laravelWhereOption($arr_option)->increment('sort', 5);
+        //获取数据
+        UsersRepository::find(19,$arr_option);
+        UsersRepository::get_list($arr_option);
+    
     }
     
 }
