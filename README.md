@@ -151,8 +151,6 @@ class IndexController
 
         
         /* Repository */
-
-        //获取数据
         UsersRepository::find($n_id,$option);//根据主键查询1条数据
         UsersRepository::get_one($option);//根据条件查询1条数据
         UsersRepository::get_list($option);//根据条件获取分页数据
