@@ -1,7 +1,7 @@
 # laravel-orm快速操作 # 
 ## 安装 ##
 
-### 安装方法 ###
+### 1.安装方法 ###
 
 ```
 composer require hashyoo/fast-laravel-orm
@@ -9,9 +9,9 @@ composer require hashyoo/fast-laravel-orm
 
 ## 使用 ##
 
-### LaravelModel ###
+### 1. LaravelModel ###
 
-#### LaravelModel引入 ####
+#### 1.1 LaravelModel引入 ####
 ```php
 <?php
 
@@ -41,7 +41,7 @@ class Users extends Base
 
 ```
 
-#### LaravelModel使用方法 ####
+#### 1.2 LaravelModel使用方法 ####
 ```php
 <?php
 
@@ -63,9 +63,9 @@ class IndexController
     
 }
 ```
-### LaravelRepository ###
+### 2. LaravelRepository ###
 
-#### LaravelRepository引入 ####
+#### 2.1 LaravelRepository引入 ####
 ```php
 <?php
 
@@ -96,7 +96,7 @@ class UsersRepository extends BaseRepository
 
 ```
 
-#### LaravelRepository使用方法 ####
+#### 2.2 LaravelRepository使用方法 ####
 ```php
 <?php
 
