@@ -11,7 +11,7 @@ composer require hashyoo/fast-laravel-orm
 
 ### 1. LaravelModel ###
 
-#### 1.1 LaravelModel引入 ####
+> #### 1.1 LaravelModel引入 ####
 ```php
 <?php
 
@@ -41,7 +41,7 @@ class Users extends Base
 
 ```
 
-#### 1.2 LaravelModel使用方法 ####
+> #### 1.2 LaravelModel使用方法 ####
 ```php
 <?php
 
@@ -65,7 +65,7 @@ class IndexController
 ```
 ### 2. LaravelRepository ###
 
-#### 2.1 LaravelRepository引入 ####
+> #### 2.1 LaravelRepository引入 ####
 ```php
 <?php
 
@@ -96,7 +96,7 @@ class UsersRepository extends BaseRepository
 
 ```
 
-#### 2.2 LaravelRepository使用方法 ####
+> #### 2.2 LaravelRepository使用方法 ####
 ```php
 <?php
 
