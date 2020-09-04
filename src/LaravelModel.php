@@ -53,7 +53,7 @@ class LaravelModel extends Model
             'id'   => 'asc',
           ],
           'limit'      => 15,
-          'rand'        => 8,//随机取数据 [随机取8条数据]
+          'rand'       => 8,//随机取数据 [随机取8条数据]
           'sum'        => 'score',
           'whereHas'   => [
             'user.goods' => [
@@ -86,7 +86,7 @@ class LaravelModel extends Model
         $s_full_table = $prefix . $table;
         $columns      = DB::getDoctrineSchemaManager()
                           ->listTableColumns($s_full_table);
-        $data     = [];
+        $data         = [];
         foreach ($columns as $column) {
             $data[] = $column->getName();
         }
@@ -118,8 +118,9 @@ class LaravelModel extends Model
     /* rand */
     private function laravel_rand($query, $data)
     {
-        if(!empty($data)){
-            $query = $query->inRandomOrder()->take($data);
+        if (!empty($data)) {
+            $query = $query->inRandomOrder()
+                           ->take($data);
         }
         return $query;
     }
