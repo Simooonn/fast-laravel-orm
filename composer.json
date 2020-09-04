@@ -10,7 +10,7 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "hashyoo/damon-function": "dev-master",
+    "hashyoo/damon-function": "*",
     "illuminate/database": "*"
   },
   "require-dev": {
