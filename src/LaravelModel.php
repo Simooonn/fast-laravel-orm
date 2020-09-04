@@ -131,7 +131,7 @@ class LaravelModel extends Model
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 if ($value[1] == 'like') {
-                    $query = $query->where($key, 'like', '%' . $value[2] . '%');
+                    $query = $query->where($value[0], 'like', '%' . $value[2] . '%');
                 }
                 else {
                     $query = $query->where($value[0], $value[1], $value[2]);
@@ -150,7 +150,7 @@ class LaravelModel extends Model
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 if ($value[1] == 'like') {
-                    $query = $query->orWhere($key, 'like', '%' . $value[2] . '%');
+                    $query = $query->orWhere($value[0], 'like', '%' . $value[2] . '%');
                 }
                 else {
                     $query = $query->orWhere($value[0], $value[1], $value[2]);
