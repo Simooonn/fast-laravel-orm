@@ -53,6 +53,7 @@ class LaravelModel extends Model
             'id'   => 'asc',
           ],
           'limit'      => 15,
+          'rand'        => 8,//随机取数据 [随机取8条数据]
           'sum'        => 'score',
           'whereHas'   => [
             'user.goods' => [
@@ -85,11 +86,11 @@ class LaravelModel extends Model
         $s_full_table = $prefix . $table;
         $columns      = DB::getDoctrineSchemaManager()
                           ->listTableColumns($s_full_table);
-        $arr_data     = [];
+        $data     = [];
         foreach ($columns as $column) {
-            $arr_data[] = $column->getName();
+            $data[] = $column->getName();
         }
-        return $arr_data;
+        return $data;
     }
 
     /* 基础 option */
@@ -108,16 +109,25 @@ class LaravelModel extends Model
     }
 
     /* with */
-    private function laravel_with($query, $arr_data)
+    private function laravel_with($query, $data)
     {
-        $query = $query->with($arr_data);
+        $query = $query->with($data);
+        return $query;
+    }
+
+    /* rand */
+    private function laravel_rand($query, $data)
+    {
+        if(!empty($data)){
+            $query = $query->inRandomOrder()->take($data);
+        }
         return $query;
     }
 
     /* where */
-    private function laravel_where($query, $arr_data)
+    private function laravel_where($query, $data)
     {
-        foreach ($arr_data as $key => $value) {
+        foreach ($data as $key => $value) {
             if (is_array($value)) {
                 if ($value[1] == 'like') {
                     $query = $query->where($key, 'like', '%' . $value . '%');
@@ -134,9 +144,9 @@ class LaravelModel extends Model
     }
 
     /* orWhere */
-    private function laravel_orwhere($query, $arr_data)
+    private function laravel_orwhere($query, $data)
     {
-        foreach ($arr_data as $key => $value) {
+        foreach ($data as $key => $value) {
             if (is_array($value)) {
                 if ($value[1] == 'like') {
                     $query = $query->orWhere($key, 'like', '%' . $value . '%');
@@ -153,9 +163,9 @@ class LaravelModel extends Model
     }
 
     /* whereIn */
-    private function laravel_wherein($query, $arr_data)
+    private function laravel_wherein($query, $data)
     {
-        foreach ($arr_data as $key => $value) {
+        foreach ($data as $key => $value) {
             if (!empty($value)) {
                 $query = $query->whereIn($key, $value);
             }
@@ -164,9 +174,9 @@ class LaravelModel extends Model
     }
 
     /* whereNotIn */
-    private function laravel_wherenotin($query, $arr_data)
+    private function laravel_wherenotin($query, $data)
     {
-        foreach ($arr_data as $key => $value) {
+        foreach ($data as $key => $value) {
             if (!empty($value)) {
                 $query = $query->whereNotIn($key, $value);
             }
@@ -175,32 +185,32 @@ class LaravelModel extends Model
     }
 
     /* select */
-    private function laravel_select($query, $arr_data)
+    private function laravel_select($query, $data)
     {
-        $query = $query->select($arr_data);
+        $query = $query->select($data);
         return $query;
     }
 
     /* withCount */
-    private function laravel_withcount($query, $arr_data)
+    private function laravel_withcount($query, $data)
     {
-        $query = $query->withCount($arr_data);
+        $query = $query->withCount($data);
         return $query;
     }
 
     /* orderBy */
-    private function laravel_order($query, $arr_data)
+    private function laravel_order($query, $data)
     {
-        foreach ($arr_data as $key => $value) {
+        foreach ($data as $key => $value) {
             $query = $query->orderBy($key, $value);
         }
         return $query;
     }
 
     /* whereHas */
-    private function laravel_wherehas($query, $arr_data)
+    private function laravel_wherehas($query, $data)
     {
-        foreach ($arr_data as $key => $value) {
+        foreach ($data as $key => $value) {
             $query = $query->whereHas($key,
               function ($qqqqq)
               use ($value) {
@@ -249,6 +259,7 @@ class LaravelModel extends Model
         }
 
         $query = !empty($option['with']) ? self::laravel_with($query, $option['with']) : $query;
+        $query = !empty($option['rand']) ? self::laravel_rand($query, $option['rand']) : $query;
         $query = !empty($option['where']) ? self::laravel_where($query, $option['where']) : $query;
         $query = !empty($option['orwhere']) ? self::laravel_orwhere($query, $option['orwhere']) : $query;
         $query = !empty($option['wherein']) ? self::laravel_wherein($query, $option['wherein']) : $query;
