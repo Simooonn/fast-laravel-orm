@@ -140,31 +140,7 @@ class LaravelModel extends Model
                 }
             }
             else {
-                $lower_key = strtolower($key);
-                switch ($lower_key) {
-                    case 'wherehas':
-                        $query = $query->where(
-                          function($query)
-                          use($value) {
-                              if (!empty($value)) {
-                                  $query = self::laravel_wherehas($query, $value);
-                              }
-                          }
-                        );
-                        break;
-                    case 'orwherehas':
-                        $query = $query->where(
-                          function($query)
-                          use($value) {
-                              if (!empty($value)) {
-                                  $query = self::laravel_orwherehas($query, $value);
-                              }
-                          }
-                        );
-                        break;
-                    default:
-                        $query = $query->where($key, $value);
-                }
+                $query = $query->where($key, $value);
             }
         }
         return $query;
@@ -185,31 +161,7 @@ class LaravelModel extends Model
                 }
             }
             else {
-                $lower_key = strtolower($key);
-                switch ($lower_key) {
-                    case 'wherehas':
-                        $query = $query->orWhere(
-                          function($query)
-                          use($value) {
-                              if (!empty($value)) {
-                                  $query = self::laravel_wherehas($query, $value);
-                              }
-                          }
-                        );
-                        break;
-                    case 'orwherehas':
-                        $query = $query->orWhere(
-                          function($query)
-                          use($value) {
-                              if (!empty($value)) {
-                                  $query = self::laravel_orwherehas($query, $value);
-                              }
-                          }
-                        );
-                        break;
-                    default:
-                        $query = $query->orWhere($key, $value);
-                }
+                $query = $query->orWhere($key, $value);
             }
         }
         return $query;
