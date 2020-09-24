@@ -131,14 +131,40 @@ class LaravelModel extends Model
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 if ($value[1] == 'like') {
+                    //模糊查询
                     $query = $query->where($value[0], 'like', '%' . $value[2] . '%');
                 }
                 else {
+                    //精准查询
                     $query = $query->where($value[0], $value[1], $value[2]);
                 }
             }
             else {
-                $query = $query->where($key, $value);
+                $lower_key = strtolower($key);
+                switch ($lower_key) {
+                    case 'wherehas':
+                        $query = $query->where(
+                          function($query)
+                          use($value) {
+                              if (!empty($value)) {
+                                  $query = self::laravel_wherehas($query, $value);
+                              }
+                          }
+                        );
+                        break;
+                    case 'orwherehas':
+                        $query = $query->where(
+                          function($query)
+                          use($value) {
+                              if (!empty($value)) {
+                                  $query = self::laravel_orwherehas($query, $value);
+                              }
+                          }
+                        );
+                        break;
+                    default:
+                        $query = $query->where($key, $value);
+                }
             }
         }
         return $query;
@@ -150,14 +176,40 @@ class LaravelModel extends Model
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 if ($value[1] == 'like') {
+                    //模糊查询
                     $query = $query->orWhere($value[0], 'like', '%' . $value[2] . '%');
                 }
                 else {
+                    //精准查询
                     $query = $query->orWhere($value[0], $value[1], $value[2]);
                 }
             }
             else {
-                $query = $query->orWhere($key, $value);
+                $lower_key = strtolower($key);
+                switch ($lower_key) {
+                    case 'wherehas':
+                        $query = $query->orWhere(
+                          function($query)
+                          use($value) {
+                              if (!empty($value)) {
+                                  $query = self::laravel_wherehas($query, $value);
+                              }
+                          }
+                        );
+                        break;
+                    case 'orwherehas':
+                        $query = $query->orWhere(
+                          function($query)
+                          use($value) {
+                              if (!empty($value)) {
+                                  $query = self::laravel_orwherehas($query, $value);
+                              }
+                          }
+                        );
+                        break;
+                    default:
+                        $query = $query->orWhere($key, $value);
+                }
             }
         }
         return $query;
@@ -213,6 +265,39 @@ class LaravelModel extends Model
     {
         foreach ($data as $key => $value) {
             $query = $query->whereHas($key,
+              function ($qqqqq)
+              use ($value) {
+                  $value = array_change_key_case($value, CASE_LOWER);
+
+                  foreach ($value as $kk => $vv) {
+                      switch ($kk) {
+                          case 'where':
+                              $qqqqq = self::laravel_where($qqqqq, $vv);
+                              break;
+                          case 'orwhere':
+                              $qqqqq = self::laravel_orwhere($qqqqq, $vv);
+                              break;
+                          case 'wherein':
+                              $qqqqq = self::laravel_wherein($qqqqq, $vv);
+                              break;
+                          case 'wherenotin':
+                              // 注：当关联关系是1对多时，whereNotIn效果有限，只有关联里有一个数据不符合whereNotIn条件，该数据仍然会显示
+                              $qqqqq = self::laravel_wherenotin($qqqqq, $vv);
+                              break;
+
+                          default:
+                      }
+                  }
+              });
+        }
+        return $query;
+    }
+
+    /* orWhereHas */
+    private function laravel_orwherehas($query, $data)
+    {
+        foreach ($data as $key => $value) {
+            $query = $query->orWhereHas($key,
               function ($qqqqq)
               use ($value) {
                   $value = array_change_key_case($value, CASE_LOWER);
