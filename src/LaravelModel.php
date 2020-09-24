@@ -69,6 +69,20 @@ class LaravelModel extends Model
               //... ...
             ],
           ],
+          'orWhereHas'   => [
+            'user.goods' => [
+              'where'   => [
+                'is_menu' => 1,//类型1
+                ['status', '!=', 2],//类型2
+                ['name', 'like', '习俗'],//类型3
+              ],
+              'whereIn' => [
+                'role_id'   => [6, 8, 22],
+                'user_name' => ['张三', '李四'],
+              ],
+              //... ...
+            ],
+          ],
 
         ];
     }
