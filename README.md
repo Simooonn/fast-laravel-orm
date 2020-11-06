@@ -1,7 +1,7 @@
 # laravel-orm快速操作 # 
 ## 安装 ##
 
-### 1. 安装方法 ###
+### 1. 安装方法  ###
 
 ```
 composer require hashyoo/fast-laravel-orm
